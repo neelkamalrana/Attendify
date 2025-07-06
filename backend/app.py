@@ -3,11 +3,14 @@ import os
 import cv2
 import numpy as np
 import face_recognition
-from datetime import datetime
+from datetime import datetime, timedelta
 from db import get_db_connection, add_users_from_images, init_db
 from werkzeug.utils import secure_filename
+from flask_cors import CORS
+import calendar
 
 app = Flask(__name__)
+CORS(app)
 UPLOAD_FOLDER = 'uploads'
 KNOWN_IMAGES_FOLDER = '../images'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -159,6 +162,52 @@ def get_users():
 @app.route('/images/<filename>')
 def serve_image(filename):
     return send_from_directory('../images', filename)
+
+@app.route('/attendance/summary', methods=['GET'])
+def attendance_summary():
+    period = request.args.get('period', 'month')  # 'week' or 'month'
+    value = request.args.get('value')  # e.g., '2025-07' or '2025-W27'
+    conn = get_db_connection()
+    cur = conn.cursor()
+    if period == 'month' and value:
+        # value: 'YYYY-MM'
+        query = '''
+            SELECT users.name, COUNT(attendance.id) as present_days
+            FROM attendance
+            JOIN users ON attendance.user_id = users.id
+            WHERE attendance.present = 1 AND attendance.date LIKE ?
+            GROUP BY users.name
+            ORDER BY users.name ASC
+        '''
+        cur.execute(query, (f'{value}%',))
+    elif period == 'week' and value:
+        # value: 'YYYY-Www' (ISO week, e.g., '2025-W27')
+        try:
+            year, week = value.split('-W')
+            year = int(year)
+            week = int(week)
+            # Get start and end date of the ISO week
+            start_date = datetime.strptime(f'{year}-W{week}-1', "%Y-W%W-%w").date()
+            end_date = start_date + timedelta(days=6)
+        except Exception:
+            return jsonify({'error': 'Invalid week format. Use YYYY-Www.'}), 400
+        query = '''
+            SELECT users.name, COUNT(attendance.id) as present_days
+            FROM attendance
+            JOIN users ON attendance.user_id = users.id
+            WHERE attendance.present = 1 AND attendance.date BETWEEN ? AND ?
+            GROUP BY users.name
+            ORDER BY users.name ASC
+        '''
+        cur.execute(query, (str(start_date), str(end_date)))
+    else:
+        return jsonify({'error': 'Missing or invalid period/value'}), 400
+    rows = cur.fetchall()
+    conn.close()
+    results = [
+        {'name': row['name'], 'present_days': row['present_days']} for row in rows
+    ]
+    return jsonify({'summary': results})
 
 if __name__ == '__main__':
     app.run(debug=True) 
