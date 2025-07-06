@@ -59,7 +59,7 @@ function App() {
         </div>
       </main>
       <footer style={{ textAlign: 'center', color: COLORS.text, marginTop: 40, padding: 16, opacity: 0.7 }}>
-        &copy; {new Date().getFullYear()} Attendify
+        &copy; 2020 Attendify
       </footer>
     </div>
   );
