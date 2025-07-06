@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import os
 import cv2
 import numpy as np
@@ -146,6 +146,19 @@ def get_attendance():
         for row in rows
     ]
     return jsonify({'attendance': results})
+
+@app.route('/users', methods=['GET'])
+def get_users():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT name, image_filename FROM users ORDER BY name ASC')
+    users = [{'name': row['name'], 'image_filename': row['image_filename']} for row in cur.fetchall()]
+    conn.close()
+    return jsonify({'users': users})
+
+@app.route('/images/<filename>')
+def serve_image(filename):
+    return send_from_directory('../images', filename)
 
 if __name__ == '__main__':
     app.run(debug=True) 

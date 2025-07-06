@@ -2,18 +2,20 @@ import React, { useState } from 'react';
 import ScreenshotUpload from './components/ScreenshotUpload';
 import AddUser from './components/AddUser';
 import AttendanceDashboard from './components/AttendanceDashboard';
+import UserList from './components/UserList';
 
 const NAV = {
   upload: 'Upload Screenshot',
   add: 'Add User',
   dashboard: 'Attendance Dashboard',
+  users: 'User List',
 };
 
 function App() {
   const [page, setPage] = useState('upload');
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#f4f6fa', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#f4f6fa', minHeight: '100vh', width: '100vw' }}>
       <header style={{ background: '#2d72d9', color: '#fff', padding: '1rem 0', marginBottom: 24, boxShadow: '0 2px 8px #0001' }}>
         <h1 style={{ textAlign: 'center', margin: 0, fontWeight: 700, letterSpacing: 1 }}>Attendify</h1>
         <nav style={{ display: 'flex', justifyContent: 'center', gap: 24, marginTop: 12 }}>
@@ -38,10 +40,13 @@ function App() {
           ))}
         </nav>
       </header>
-      <main>
-        {page === 'upload' && <ScreenshotUpload />}
-        {page === 'add' && <AddUser />}
-        {page === 'dashboard' && <AttendanceDashboard />}
+      <main style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', minHeight: '70vh', width: '100%' }}>
+        <div style={{ flex: 1, maxWidth: 900 }}>
+          {page === 'upload' && <ScreenshotUpload />}
+          {page === 'add' && <AddUser />}
+          {page === 'dashboard' && <AttendanceDashboard />}
+          {page === 'users' && <UserList />}
+        </div>
       </main>
       <footer style={{ textAlign: 'center', color: '#888', marginTop: 40, padding: 16 }}>
         &copy; {new Date().getFullYear()} Attendify
