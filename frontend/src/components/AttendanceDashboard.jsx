@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const AttendanceDashboard = () => {
+const AttendanceDashboard = ({ colors }) => {
   const [attendance, setAttendance] = useState([]);
   const [user, setUser] = useState('');
   const [month, setMonth] = useState('');
@@ -36,54 +36,58 @@ const AttendanceDashboard = () => {
   }, [user, month]);
 
   return (
-    <div style={{ maxWidth: 700, margin: '2rem auto', padding: 24, border: '1px solid #eee', borderRadius: 8, background: '#f9f9fb' }}>
-      <h2 style={{ color: '#2d72d9', marginBottom: 8 }}>Attendify</h2>
-      <h3 style={{ marginTop: 0 }}>Attendance Dashboard</h3>
-      <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
+    <div style={{ maxWidth: 700, margin: '2rem auto', padding: 0, borderRadius: 10, boxShadow: '0 2px 12px #0003', background: colors.card, color: colors.text }}>
+      <div style={{ background: colors.header, color: colors.accent, borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: '1.2rem 1rem 1rem 1rem', textAlign: 'center' }}>
+        <h2 style={{ margin: 0, fontWeight: 700, fontSize: 24 }}>Attendify</h2>
+        <h3 style={{ margin: 0, color: colors.text, fontWeight: 400 }}>Attendance Dashboard</h3>
+      </div>
+      <div style={{ display: 'flex', gap: 12, margin: '24px 24px 16px 24px' }}>
         <input
           type="text"
           placeholder="Filter by user name"
           value={user}
           onChange={e => setUser(e.target.value)}
-          style={{ flex: 1, padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
+          style={{ flex: 1, padding: 8, borderRadius: 4, border: `1px solid ${colors.header}`, background: colors.background, color: colors.text }}
         />
         <input
           type="month"
           value={month}
           onChange={e => setMonth(e.target.value)}
-          style={{ padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
+          style={{ padding: 8, borderRadius: 4, border: `1px solid ${colors.header}`, background: colors.background, color: colors.text }}
         />
-        <button onClick={fetchAttendance} style={{ background: '#2d72d9', color: '#fff', border: 'none', borderRadius: 4, padding: '8px 16px', cursor: 'pointer' }}>
+        <button onClick={fetchAttendance} style={{ background: colors.accent, color: colors.background, border: 'none', borderRadius: 4, padding: '8px 16px', cursor: 'pointer', fontWeight: 600 }}>
           Refresh
         </button>
       </div>
       {loading ? (
-        <div>Loading...</div>
+        <div style={{ margin: '0 24px', color: colors.text }}>Loading...</div>
       ) : error ? (
-        <div style={{ color: 'red' }}>{error}</div>
+        <div style={{ color: '#ff5252', margin: '0 24px' }}>{error}</div>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff' }}>
-          <thead>
-            <tr style={{ background: '#f0f4fa' }}>
-              <th style={{ padding: 8, border: '1px solid #eee' }}>Name</th>
-              <th style={{ padding: 8, border: '1px solid #eee' }}>Date</th>
-              <th style={{ padding: 8, border: '1px solid #eee' }}>Present</th>
-            </tr>
-          </thead>
-          <tbody>
-            {attendance.length === 0 ? (
-              <tr><td colSpan={3} style={{ textAlign: 'center', padding: 16 }}>No records found.</td></tr>
-            ) : (
-              attendance.map((row, idx) => (
-                <tr key={idx}>
-                  <td style={{ padding: 8, border: '1px solid #eee' }}>{row.name}</td>
-                  <td style={{ padding: 8, border: '1px solid #eee' }}>{row.date}</td>
-                  <td style={{ padding: 8, border: '1px solid #eee' }}>{row.present ? '✔️' : '❌'}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+        <div style={{ margin: '0 24px 24px 24px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', background: colors.card, color: colors.text }}>
+            <thead>
+              <tr style={{ background: colors.header }}>
+                <th style={{ padding: 8, border: `1px solid ${colors.background}` }}>Name</th>
+                <th style={{ padding: 8, border: `1px solid ${colors.background}` }}>Date</th>
+                <th style={{ padding: 8, border: `1px solid ${colors.background}` }}>Present</th>
+              </tr>
+            </thead>
+            <tbody>
+              {attendance.length === 0 ? (
+                <tr><td colSpan={3} style={{ textAlign: 'center', padding: 16 }}>No records found.</td></tr>
+              ) : (
+                attendance.map((row, idx) => (
+                  <tr key={idx}>
+                    <td style={{ padding: 8, border: `1px solid ${colors.background}` }}>{row.name}</td>
+                    <td style={{ padding: 8, border: `1px solid ${colors.background}` }}>{row.date}</td>
+                    <td style={{ padding: 8, border: `1px solid ${colors.background}` }}>{row.present ? <span style={{ color: '#4caf50' }}>✔️</span> : <span style={{ color: '#ff5252' }}>❌</span>}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

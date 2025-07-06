@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const AddUser = () => {
+const AddUser = ({ colors }) => {
   const [name, setName] = useState('');
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -43,29 +43,27 @@ const AddUser = () => {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: '2rem auto', padding: 24, border: '1px solid #eee', borderRadius: 8, background: '#f9f9fb' }}>
-      <h2 style={{ color: '#2d72d9', marginBottom: 8 }}>Attendify</h2>
-      <h3 style={{ marginTop: 0 }}>Add New User</h3>
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 12 }}>
-          <input
-            type="text"
-            placeholder="User Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
-          />
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <input type="file" accept="image/*" onChange={handleFileChange} required />
-        </div>
-        <button type="submit" disabled={loading} style={{ background: '#2d72d9', color: '#fff', border: 'none', borderRadius: 4, padding: '8px 16px', cursor: 'pointer' }}>
+    <div style={{ maxWidth: 400, margin: '2rem auto', padding: 0, borderRadius: 10, boxShadow: '0 2px 12px #0003', background: colors.card, color: colors.text }}>
+      <div style={{ background: colors.header, color: colors.accent, borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: '1.2rem 1rem 1rem 1rem', textAlign: 'center' }}>
+        <h2 style={{ margin: 0, fontWeight: 700, fontSize: 24 }}>Attendify</h2>
+        <h3 style={{ margin: 0, color: colors.text, fontWeight: 400 }}>Add New User</h3>
+      </div>
+      <form onSubmit={handleSubmit} style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <input
+          type="text"
+          placeholder="User Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          style={{ width: '100%', padding: 8, borderRadius: 4, border: `1px solid ${colors.header}`, background: colors.background, color: colors.text }}
+        />
+        <input type="file" accept="image/*" onChange={handleFileChange} required style={{ background: colors.background, color: colors.text, border: `1px solid ${colors.header}`, borderRadius: 4, padding: 8 }} />
+        <button type="submit" disabled={loading} style={{ background: colors.accent, color: colors.background, border: 'none', borderRadius: 4, padding: '10px 0', fontWeight: 600, fontSize: 16, cursor: 'pointer' }}>
           {loading ? 'Uploading...' : 'Add User'}
         </button>
       </form>
-      {result && <div style={{ color: 'green', marginTop: 16 }}>{result}</div>}
-      {error && <div style={{ color: 'red', marginTop: 16 }}>{error}</div>}
+      {result && <div style={{ color: '#4caf50', margin: '0 24px 16px 24px' }}>{result}</div>}
+      {error && <div style={{ color: '#ff5252', margin: '0 24px 16px 24px' }}>{error}</div>}
     </div>
   );
 };

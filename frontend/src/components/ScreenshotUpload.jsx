@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const ScreenshotUpload = () => {
+const ScreenshotUpload = ({ colors }) => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -39,19 +39,21 @@ const ScreenshotUpload = () => {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: '2rem auto', padding: 24, border: '1px solid #eee', borderRadius: 8 }}>
-      <h2>Upload Meeting Screenshot</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="file" accept="image/*" onChange={handleFileChange} required />
-        <button type="submit" disabled={loading} style={{ marginLeft: 8 }}>
+    <div style={{ maxWidth: 450, margin: '2rem auto', padding: 0, borderRadius: 10, boxShadow: '0 2px 12px #0003', background: colors.card, color: colors.text }}>
+      <div style={{ background: colors.header, color: colors.accent, borderTopLeftRadius: 10, borderTopRightRadius: 10, padding: '1.2rem 1rem 1rem 1rem', textAlign: 'center' }}>
+        <h2 style={{ margin: 0, fontWeight: 700, fontSize: 24 }}>Upload Meeting Screenshot</h2>
+      </div>
+      <form onSubmit={handleSubmit} style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <input type="file" accept="image/*" onChange={handleFileChange} required style={{ background: colors.background, color: colors.text, border: `1px solid ${colors.header}`, borderRadius: 4, padding: 8 }} />
+        <button type="submit" disabled={loading} style={{ background: colors.accent, color: colors.background, border: 'none', borderRadius: 4, padding: '10px 0', fontWeight: 600, fontSize: 16, cursor: 'pointer' }}>
           {loading ? 'Uploading...' : 'Upload'}
         </button>
       </form>
       {result && (
-        <div style={{ marginTop: 16 }}>
-          <h4>Recognized Users:</h4>
+        <div style={{ margin: '0 24px 16px 24px', color: colors.text, background: colors.header, borderRadius: 6, padding: 12 }}>
+          <h4 style={{ margin: '0 0 8px 0', color: colors.accent }}>Recognized Users:</h4>
           {result.recognized && result.recognized.length > 0 ? (
-            <ul>
+            <ul style={{ margin: 0, paddingLeft: 18 }}>
               {result.recognized.map((name) => (
                 <li key={name}>{name}</li>
               ))}
@@ -59,10 +61,10 @@ const ScreenshotUpload = () => {
           ) : (
             <p>No users recognized.</p>
           )}
-          <div style={{ color: 'green' }}>{result.message}</div>
+          <div style={{ color: '#4caf50', marginTop: 8 }}>{result.message}</div>
         </div>
       )}
-      {error && <div style={{ color: 'red', marginTop: 16 }}>{error}</div>}
+      {error && <div style={{ color: '#ff5252', margin: '0 24px 16px 24px' }}>{error}</div>}
     </div>
   );
 };
