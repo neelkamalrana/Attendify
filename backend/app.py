@@ -61,10 +61,12 @@ def upload_image():
     face_locations = face_recognition.face_locations(rgb_img)
     face_encodings = face_recognition.face_encodings(rgb_img, face_locations)
 
-    recognized = []
+    recognized = set()  # Use set to ensure unique users
     conn = get_db_connection()
     cur = conn.cursor()
     today = datetime.now().strftime('%Y-%m-%d')
+    
+    # First, identify all recognized users from the uploaded image
     for encoding in face_encodings:
         matches = face_recognition.compare_faces(known_encodings, encoding, tolerance=0.5)
         face_distances = face_recognition.face_distance(known_encodings, encoding)
@@ -72,20 +74,30 @@ def upload_image():
             best_match_index = np.argmin(face_distances)
             if matches[best_match_index]:
                 name = known_names[best_match_index]
-                recognized.append(name)
-                # Mark attendance in DB
-                cur.execute('SELECT id FROM users WHERE name = ?', (name,))
-                user = cur.fetchone()
-                if user:
-                    user_id = user['id']
-                    # Only mark present if not already marked today
-                    cur.execute('SELECT * FROM attendance WHERE user_id = ? AND date = ?', (user_id, today))
-                    if not cur.fetchone():
-                        cur.execute('INSERT INTO attendance (user_id, date, present) VALUES (?, ?, ?)', (user_id, today, 1))
+                recognized.add(name)  # Add to set to ensure uniqueness
+    
+    # Then, mark attendance for each unique recognized user
+    attendance_marked = []
+    for name in recognized:
+        cur.execute('SELECT id FROM users WHERE name = ?', (name,))
+        user = cur.fetchone()
+        if user:
+            user_id = user['id']
+            # Only mark present if not already marked today
+            cur.execute('SELECT * FROM attendance WHERE user_id = ? AND date = ?', (user_id, today))
+            if not cur.fetchone():
+                cur.execute('INSERT INTO attendance (user_id, date, present) VALUES (?, ?, ?)', (user_id, today, 1))
+                attendance_marked.append(name)
+    
     conn.commit()
     conn.close()
 
-    return jsonify({'recognized': recognized, 'message': f'Attendance updated for: {recognized}'})
+    recognized_list = list(recognized)  # Convert back to list for JSON response
+    return jsonify({
+        'recognized': recognized_list, 
+        'message': f'Attendance updated for: {recognized_list}',
+        'attendance_marked': attendance_marked
+    })
 
 @app.route('/add_user', methods=['POST'])
 def add_user():
