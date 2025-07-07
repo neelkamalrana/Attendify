@@ -52,10 +52,10 @@
 ## 🖥️ Screenshots
 
 <p align="center">
-  <img src="screenshots/Screenshot-1.jpeg" width="30%" alt="Upload Screenshot Page" />
-  <img src="screenshots/Screenshot-2.jpeg" width="30%" alt="Add User Page" />
-  <img src="screenshots/Screenshot-3.jpeg" width="30%" alt="Dashboard View" />
-  <img src="screenshots/Screenshot-4.jpeg" width="30%" alt="Recognized Users" />
+  <img src="screenshots/Screenshot-1.jpeg" width="100%" alt="Upload Screenshot Page" />
+  <img src="screenshots/Screenshot-2.jpeg" width="100%" alt="Add User Page" />
+  <img src="screenshots/Screenshot-3.jpeg" width="100%" alt="Dashboard View" />
+  <img src="screenshots/Screenshot-4.jpeg" width="100%" alt="Recognized Users" />
 </p>
 
 ---
